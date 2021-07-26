@@ -19,5 +19,6 @@
   "license": "MIT",
   "devDependencies": {
     "nodemon": "^2.0.4"
-  }
+  },
+  "proxy": "https://fccshortenurl.herokuapp.com"
 }
