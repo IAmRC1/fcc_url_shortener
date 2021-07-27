@@ -27,15 +27,8 @@
         <form action="/api/shorturl" method="post">
           <div class="field has-addons is-justify-content-center">
             <div class="control">
-              <a class="button is-static">
-                www.
-              </a>
+              <input type="text" class="input" name="input_url" placeholder="https://www.google.com" required>
             </div>
-            <div class="control">
-              <input type="text" class="input" name="input_url" placeholder="google.com">
-              <p class="help">Don't worry about http/https!</p>
-            </div>
-            
             <div class="control">
               <input type="submit" class="button is-info" value="Shorten It" />
             </div>

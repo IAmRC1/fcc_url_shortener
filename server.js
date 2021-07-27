@@ -50,39 +50,40 @@ app.post('/api/shorturl', function (req, res) {
   const { input_url } = req.body
   const urlCode = shortId.generate()
 
-  dns.lookup(input_url, async function (err, val, family) {
-    if(err) {
-      return res.status(401).json({
-        error: 'invalid URL'
-      })
-    }
-    try {
-      const ifURLExists = await URL.findOne({
-        original_url: input_url
-      })
-      if (ifURLExists) {
-        res.json({
-          original_url: ifURLExists.original_url,
-          short_url: ifURLExists.short_url
+  if(validUrl.isHttpUri(input_url) || validUrl.isHttpsUri(input_url)) {
+    dns.lookup(input_url, async function (err, val, family) {
+      try {
+        const urlExists = await URL.findOne({
+          original_url: input_url
         })
-      } else {
-        // if its not exist yet then create new one and response with the result
-        const newURL = new URL({
-          original_url: input_url,
-          short_url: urlCode
-        })
-        await newURL.save();
-        return res.json({
-          original_url: newURL.original_url,
-          short_url: newURL.short_url
-        })
+        if (urlExists) {
+          res.json({
+            original_url: urlExists.original_url,
+            short_url: urlExists.short_url
+          })
+        } else {
+          const newURL = new URL({
+            original_url: input_url,
+            short_url: urlCode
+          })
+          await newURL.save();
+          return res.json({
+            original_url: newURL.original_url,
+            short_url: newURL.short_url
+          })
+        }
+      } catch (err) {
+        console.error(err)
+        res.status(500).json('Server error...')
       }
-    } catch (err) {
-      console.error(err)
-      res.status(500).json('Server error...')
-    }
-  });
-})
+    })
+  } else {
+    return res.status(401).json({
+      error: 'invalid url'
+    })
+  }
+});
+
 
 app.get('/api/shorturl/:short_url', async function (req, res) {
   try {
