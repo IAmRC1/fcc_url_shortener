@@ -60,7 +60,6 @@ app.post('/api/shorturl', function (req, res) {
       const ifURLExists = await URL.findOne({
         original_url: input_url
       })
-      console.log(`ifURLExists`, ifURLExists)
       if (ifURLExists) {
         res.json({
           original_url: ifURLExists.original_url,
